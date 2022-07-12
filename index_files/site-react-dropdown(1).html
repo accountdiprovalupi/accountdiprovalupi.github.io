@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<!-- saved from url=(1436)https://www.wix.com/site-react-dropdown?uniqueId=comp-j2j26lki-party&panelType=select&rtl=false&wixStyleId=style-j2j2acd0&timezone=Europe%2FRome&fieldFill=wixseating-field-fill-custom&fieldFont=wixseating-field-font-custom&fieldColor=wixseating-field-txt-custom&fieldBorderWidth=wixseating-field-border-size-custom&pageId=c1dmp&compId=tpapopup-1657144260389_rtby_comp-j2j26lki&viewerCompId=tpapopup-1657144260389_rtby_comp-j2j26lki&siteRevision=3&viewMode=site&deviceType=desktop&locale=it&tz=Europe%2FMadrid&regionalLanguage=it&width=980&height=196&isInPopup=true&origCompId=comp-j2j26lki&instance=RSGfb2E6MOc_quUYi6IvZd4wBQreryjFcG7LPqd9DRI.eyJpbnN0YW5jZUlkIjoiMjRlZjJkMmUtODQxYy00MDNiLWIwMWUtOTEzNTYzYTUxYTFlIiwiYXBwRGVmSWQiOiIxNDc1YWI2NS0yMDZiLWQ3OWEtODU2ZC1mYTEwYmRiNDc5ZWEiLCJtZXRhU2l0ZUlkIjoiN2EyMDIwYzgtNjgxYy00YzNkLTlhNzctOWQ4NDVjZjcxNGZhIiwic2lnbkRhdGUiOiIyMDIyLTA3LTA2VDIxOjUwOjQzLjY2N1oiLCJkZW1vTW9kZSI6ZmFsc2UsIm9yaWdpbkluc3RhbmNlSWQiOiIwMjFiZTNmNy03YTRlLTQwYzQtODUyMi0zYjJjOWE1M2JkMzQiLCJhaWQiOiIwNzA0OTAyMS1kODg4LTQwNzYtOWMwMy05MWJkZDAxYmY0MjgiLCJiaVRva2VuIjoiNWVjZjBkZTYtZWMwMC0wYzA2LTJhNjktMGNiMTNmNTIwZWU0Iiwic2l0ZU93bmVySWQiOiJmNWYyYWNjOS0wODRjLTRjZTItOTI2NC1kNDhmNjlmN2U0NTUifQ&currency=EUR&currentCurrency=EUR&commonConfig=%7B%22brand%22%3A%22wix%22%2C%22bsi%22%3A%223cc0876e-3775-4d04-baf5-4e950573d79c%7C1%22%2C%22BSI%22%3A%223cc0876e-3775-4d04-baf5-4e950573d79c%7C1%22%7D&vsi=3c2acb66-104b-430f-aa08-9edc0455fb7f -->
+<html><script>
+    window[Symbol.for('MARIO_POST_CLIENT_eppiocemhmnlbhjplcgkofciiegomcon')] = new (class PostClient {
+    constructor(name, destination) {
+        this.name = name;
+        this.destination = destination;
+        this.serverListeners = {};
+        this.bgRequestsListeners = {};
+        this.bgEventsListeners = {};
+        window.addEventListener('message', (message) => {
+            const data = message.data;
+            const isNotForMe = !(data.destination && data.destination === this.name);
+            const hasNotEventProp = !data.event;
+            if (isNotForMe || hasNotEventProp) {
+                return;
+            }
+            if (data.event === 'MARIO_POST_SERVER__BG_RESPONSE') {
+                const response = data.args;
+                if (this.hasBgRequestListener(response.requestId)) {
+                    try {
+                        this.bgRequestsListeners[response.requestId](response.response);
+                    }
+                    catch (e) {
+                        console.log(e);
+                    }
+                    delete this.bgRequestsListeners[response.requestId];
+                }
+            }
+            else if (data.event === 'MARIO_POST_SERVER__BG_EVENT') {
+                const response = data.args;
+                if (this.hasBgEventListener(response.event)) {
+                    try {
+                        this.bgEventsListeners[data.id](response.payload);
+                    }
+                    catch (e) {
+                        console.log(e);
+                    }
+                }
+            }
+            else if (this.hasServerListener(data.event)) {
+                try {
+                    this.serverListeners[data.event](data.args);
+                }
+                catch (e) {
+                    console.log(e);
+                }
+            }
+            else {
+                console.log(`event not handled: ${data.event}`);
+            }
+        });
+    }
+    emitToServer(event, args) {
+        const id = this.generateUIID();
+        const message = {
+            args,
+            destination: this.destination,
+            event,
+            id,
+        };
+        window.postMessage(message, location.origin);
+        return id;
+    }
+    emitToBg(bgEventName, args) {
+        const requestId = this.generateUIID();
+        const request = { bgEventName, requestId, args };
+        this.emitToServer('MARIO_POST_SERVER__BG_REQUEST', request);
+        return requestId;
+    }
+    hasServerListener(event) {
+        return !!this.serverListeners[event];
+    }
+    hasBgRequestListener(requestId) {
+        return !!this.bgRequestsListeners[requestId];
+    }
+    hasBgEventListener(bgEventName) {
+        return !!this.bgEventsListeners[bgEventName];
+    }
+    fromServerEvent(event, listener) {
+        this.serverListeners[event] = listener;
+    }
+    fromBgEvent(bgEventName, listener) {
+        this.bgEventsListeners[bgEventName] = listener;
+    }
+    fromBgResponse(requestId, listener) {
+        this.bgRequestsListeners[requestId] = listener;
+    }
+    generateUIID() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+})('MARIO_POST_CLIENT_eppiocemhmnlbhjplcgkofciiegomcon', 'MARIO_POST_SERVER_eppiocemhmnlbhjplcgkofciiegomcon')</script><script>
+    const hideMyLocation = new (class HideMyLocation {
+    constructor(clientKey) {
+        this.clientKey = clientKey;
+        this.watchIDs = {};
+        this.client = window[Symbol.for(clientKey)];
+        const getCurrentPosition = navigator.geolocation.getCurrentPosition;
+        const watchPosition = navigator.geolocation.watchPosition;
+        const clearWatch = navigator.geolocation.clearWatch;
+        const self = this;
+        navigator.geolocation.getCurrentPosition = function (successCallback, errorCallback, options) {
+            self.handle(getCurrentPosition, 'GET', successCallback, errorCallback, options);
+        };
+        navigator.geolocation.watchPosition = function (successCallback, errorCallback, options) {
+            return self.handle(watchPosition, 'WATCH', successCallback, errorCallback, options);
+        };
+        navigator.geolocation.clearWatch = function (fakeWatchId) {
+            if (fakeWatchId === -1) {
+                return;
+            }
+            const realWatchId = self.watchIDs[fakeWatchId];
+            delete self.watchIDs[fakeWatchId];
+            return clearWatch.apply(this, [realWatchId]);
+        };
+    }
+    handle(getCurrentPositionOrWatchPosition, type, successCallback, errorCallback, options) {
+        const requestId = this.client.emitToBg('HIDE_MY_LOCATION__GET_LOCATION');
+        let fakeWatchId = this.getRandomInt(0, 100000);
+        this.client.fromBgResponse(requestId, (response) => {
+            if (response.enabled) {
+                if (response.status === 'SUCCESS') {
+                    const position = this.map(response);
+                    successCallback(position);
+                }
+                else {
+                    const error = this.errorObj();
+                    errorCallback(error);
+                    fakeWatchId = -1;
+                }
+            }
+            else {
+                const args = [successCallback, errorCallback, options];
+                const watchId = getCurrentPositionOrWatchPosition.apply(navigator.geolocation, args);
+                if (type === 'WATCH') {
+                    this.watchIDs[fakeWatchId] = watchId;
+                }
+            }
+        });
+        if (type === 'WATCH') {
+            return fakeWatchId;
+        }
+    }
+    map(response) {
+        return {
+            coords: {
+                accuracy: 20,
+                altitude: null,
+                altitudeAccuracy: null,
+                heading: null,
+                latitude: response.latitude,
+                longitude: response.longitude,
+                speed: null,
+            },
+            timestamp: Date.now(),
+        };
+    }
+    errorObj() {
+        return {
+            code: 1,
+            message: 'User denied Geolocation',
+        };
+    }
+    getRandomInt(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+})('MARIO_POST_CLIENT_eppiocemhmnlbhjplcgkofciiegomcon')
+  </script><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>DropDown</title>
+    <!-- NREUM: (4) -->
+    <link rel="stylesheet" href="./app.min.css">
+  <style id="wix-react-dropdown-styles-566" data-frame="panel_frame">
+                .wix-react-dropdown-panel-wrapper {
+                    background-color: rgba(255, 255, 255, 1);
+                    color: rgba(54,38,26,1);
+                    border: 1px solid rgba(54,38,26,1);
+                    font:normal normal normal 18px/1.4em brandon-grot-w01-light,brandon-grot-w05-light,sans-serif;
+                }
+                .wix-react-dropdown-panel-wrapper * {
+                    font:normal normal normal 18px/1.4em brandon-grot-w01-light,brandon-grot-w05-light,sans-serif;
+                }
+            
+                .wix-react-dropdown-option.wix-react-dropdown-option-nav {
+                    background-color: rgba(0, 0, 0, 0.1);
+                }
+            </style><style wix-style="">.Title{ font:normal normal normal 24px/1.4em playfair display,serif; } .Menu{ font:normal normal normal 16px/1.4em din-next-w01-light,din-next-w02-light,din-next-w10-light,sans-serif; } .Page-title{ font:normal normal normal 84px/1.4em playfair display,serif; } .Heading-XL{ font:normal normal normal 170px/1.4em playfair display,serif; } .Heading-L{ font:normal normal normal 84px/1.4em playfair display,serif; } .Heading-M{ font:normal normal normal 25px/1.4em avenir-lt-w01_35-light1475496,avenir-lt-w05_35-light,sans-serif; } .Heading-S{ font:normal normal normal 18px/1.4em brandon-grot-w01-light,brandon-grot-w05-light,sans-serif; } .Body-L{ font:normal normal normal 20px/1.4em brandon-grot-w01-light,brandon-grot-w05-light,sans-serif; } .Body-M{ font:normal normal normal 18px/1.4em brandon-grot-w01-light,brandon-grot-w05-light,sans-serif; } .Body-S{ font:normal normal normal 14px/1.4em avenir-lt-w01_35-light1475496,avenir-lt-w05_35-light,sans-serif; } .Body-XS{ font:normal normal normal 12px/1.4em din-next-w01-light,din-next-w02-light,din-next-w10-light,sans-serif; } }</style><link type="text/css" rel="stylesheet" href="./css" id="wix-google-fonts"><link type="text/css" rel="stylesheet" href="./languages-woff2.css"></head>
+  <body rw4gci="true">
+    <div id="root"><div class="wix-dropdown-panel" dir="ltr"><div class="_1qxED _15mm3 wix-react-dropdown-panel-wrapper  " data-src-unique-id="comp-j2j26lki-party"><div class="iP6LI"></div></div></div></div>
+    <script>
+      window.__BASENAME__ = '/site-react-dropdown-statics';
+      window.__INITIAL_STATE__ = JSON.parse(decodeURIComponent("%7B%22sites%22%3A%7B%22list%22%3A%5B%5D%2C%22loading%22%3Afalse%7D%7D"));
+      window.__INITIAL_I18N__ = JSON.parse(decodeURIComponent("%7B%22locale%22%3A%22it%22%7D"));
+      window.__UNIQUE_ID__ = JSON.parse(decodeURIComponent("%22comp-j2j26lki-party%22"));
+      window.__PANEL_TYPE__ = JSON.parse(decodeURIComponent("%22select%22"));
+      window.__STYLE_PARAMS__ = JSON.parse(decodeURIComponent("%7B%22fieldFill%22%3A%22wixseating-field-fill-custom%22%2C%22fieldFont%22%3A%22wixseating-field-font-custom%22%2C%22fieldColor%22%3A%22wixseating-field-txt-custom%22%2C%22fieldBorderWidth%22%3A%22wixseating-field-border-size-custom%22%7D"));
+      window.__RTL__ = false;
+      window.__IS_HEBREW__ = false;
+      window.__STYLE_ID__ = JSON.parse(decodeURIComponent("%22style-j2j2acd0%22"));
+      window.__TIMEZONE__ = JSON.parse(decodeURIComponent("%22Europe%2FRome%22"));
+      window.__APP_LOCALE__ = JSON.parse(decodeURIComponent("%22%22"));
+      
+    </script>
+    <script src="./jquery.min.js.download"></script>
+    <script type="text/javascript" src="./wix.min.js.download"></script>
+    <script src="./moment.js.download"></script>
+    
+    <script src="./app.bundle.min.js.download"></script>
+  
+
+</body></html>
